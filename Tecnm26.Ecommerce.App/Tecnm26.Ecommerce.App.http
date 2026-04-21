@@ -1,0 +1,6 @@
+@Tecnm26.Ecommerce.App_HostAddress = http://localhost:5247
+
+GET {{Tecnm26.Ecommerce.App_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
