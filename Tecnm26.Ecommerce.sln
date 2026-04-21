@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tecnm26.Ecommerce.App", "Tecnm26.Ecommerce.App\Tecnm26.Ecommerce.App.csproj", "{C09B9A9A-5659-46C7-BA96-ED9D8FFBD605}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tecnm26.Ecommerce.Api", "Tecnm26.Ecommerce.Api\Tecnm26.Ecommerce.Api.csproj", "{C09B9A9A-5659-46C7-BA96-ED9D8FFBD605}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tecnm26.Ecommerce.Core", "Tecnm26.Ecommerce.Core\Tecnm26.Ecommerce.Core.csproj", "{EBA58F0B-7BF5-4833-96DD-2996AED0A81E}"
 EndProject

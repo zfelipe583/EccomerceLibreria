@@ -13,7 +13,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Tecnm26.Ecommerce.App\Tecnm26.Ecommerce.App.csproj" />
+      <ProjectReference Include="..\Tecnm26.Ecommerce.Api\Tecnm26.Ecommerce.Api.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Entities\" />
+      <Folder Include="Http\" />
     </ItemGroup>
 
 </Project>
