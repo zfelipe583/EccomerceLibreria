@@ -16,9 +16,4 @@
       <ProjectReference Include="..\Tecnm26.Ecommerce.Api\Tecnm26.Ecommerce.Api.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Entities\" />
-      <Folder Include="Http\" />
-    </ItemGroup>
-
 </Project>
