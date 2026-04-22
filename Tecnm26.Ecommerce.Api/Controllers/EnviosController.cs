@@ -26,32 +26,107 @@ public class EnviosController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Response<Envios>>> Get(int id)
     {
+        var response = new Response<Envios>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var data = await _repository.GetById(id);
 
         if (data == null)
-            return NotFound(new Response<Envios> { Errors = { "Envio no encontrado" } });
+        {
+            response.Errors.Add("Envío no encontrado");
+            return NotFound(response);
+        }
 
-        return Ok(new Response<Envios> { Data = data });
+        response.Data = data;
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult<Response<Envios>>> Post([FromBody] Envios envio)
     {
+        var response = new Response<Envios>();
+
+        if (envio == null)
+        {
+            response.Errors.Add("Datos requeridos");
+            return BadRequest(response);
+        }
+
+        if (envio.IdVenta <= 0)
+            response.Errors.Add("IdVenta es requerido");
+
+        if (string.IsNullOrWhiteSpace(envio.DireccionEnvio))
+            response.Errors.Add("DireccionEnvio es requerida");
+
+        if (string.IsNullOrWhiteSpace(envio.Ciudad))
+            response.Errors.Add("Ciudad es requerida");
+
+        if (string.IsNullOrWhiteSpace(envio.CodigoPostal))
+            response.Errors.Add("CodigoPostal es requerido");
+
+        if (!string.IsNullOrWhiteSpace(envio.EstadoEnvio) && envio.EstadoEnvio.Length > 50)
+            response.Errors.Add("EstadoEnvio no puede superar 50 caracteres");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.SaveAsync(envio);
-        return Ok(new Response<Envios> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpPut]
     public async Task<ActionResult<Response<Envios>>> Put([FromBody] Envios envio)
     {
+        var response = new Response<Envios>();
+
+        if (envio.Id <= 0)
+            response.Errors.Add("Id es requerido");
+
+        if (envio.IdVenta <= 0)
+            response.Errors.Add("IdVenta es requerido");
+
+        if (string.IsNullOrWhiteSpace(envio.DireccionEnvio))
+            response.Errors.Add("DireccionEnvio es requerida");
+
+        if (string.IsNullOrWhiteSpace(envio.Ciudad))
+            response.Errors.Add("Ciudad es requerida");
+
+        if (string.IsNullOrWhiteSpace(envio.CodigoPostal))
+            response.Errors.Add("CodigoPostal es requerido");
+
+        if (!string.IsNullOrWhiteSpace(envio.EstadoEnvio) && envio.EstadoEnvio.Length > 50)
+            response.Errors.Add("EstadoEnvio no puede superar 50 caracteres");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.UpdateAsync(envio);
-        return Ok(new Response<Envios> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Response<bool>>> Delete(int id)
     {
+        var response = new Response<bool>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var result = await _repository.DeleteAsync(id);
-        return Ok(new Response<bool> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 }

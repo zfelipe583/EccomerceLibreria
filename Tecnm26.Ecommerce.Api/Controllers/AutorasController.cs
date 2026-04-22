@@ -26,32 +26,89 @@ public class AutorasController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Response<Autora>>> Get(int id)
     {
+        var response = new Response<Autora>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var data = await _repository.GetById(id);
 
         if (data == null)
-            return NotFound(new Response<Autora> { Errors = { "Autora no encontrada" } });
+        {
+            response.Errors.Add("Autora no encontrada");
+            return NotFound(response);
+        }
 
-        return Ok(new Response<Autora> { Data = data });
+        response.Data = data;
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult<Response<Autora>>> Post([FromBody] Autora autora)
     {
+        var response = new Response<Autora>();
+
+        if (autora == null)
+        {
+            response.Errors.Add("Datos requeridos");
+            return BadRequest(response);
+        }
+
+        if (string.IsNullOrWhiteSpace(autora.Nombre))
+            response.Errors.Add("Nombre es requerido");
+
+        if (autora.TotalLibrosEscritos < 0)
+            response.Errors.Add("TotalLibrosEscritos no puede ser negativo");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.SaveAsync(autora);
-        return Ok(new Response<Autora> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpPut]
     public async Task<ActionResult<Response<Autora>>> Put([FromBody] Autora autora)
     {
+        var response = new Response<Autora>();
+
+        if (autora.Id <= 0)
+            response.Errors.Add("Id es requerido");
+
+        if (string.IsNullOrWhiteSpace(autora.Nombre))
+            response.Errors.Add("Nombre es requerido");
+
+        if (autora.TotalLibrosEscritos < 0)
+            response.Errors.Add("TotalLibrosEscritos no puede ser negativo");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.UpdateAsync(autora);
-        return Ok(new Response<Autora> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Response<bool>>> Delete(int id)
     {
+        var response = new Response<bool>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var result = await _repository.DeleteAsync(id);
-        return Ok(new Response<bool> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 }

@@ -26,32 +26,101 @@ public class LibrosController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Response<Libros>>> Get(int id)
     {
+        var response = new Response<Libros>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var data = await _repository.GetById(id);
 
         if (data == null)
-            return NotFound(new Response<Libros> { Errors = { "Libro no encontrado" } });
+        {
+            response.Errors.Add("Libro no encontrado");
+            return NotFound(response);
+        }
 
-        return Ok(new Response<Libros> { Data = data });
+        response.Data = data;
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult<Response<Libros>>> Post([FromBody] Libros libro)
     {
+        var response = new Response<Libros>();
+
+        if (libro == null)
+        {
+            response.Errors.Add("Datos requeridos");
+            return BadRequest(response);
+        }
+
+        if (string.IsNullOrWhiteSpace(libro.Titulo))
+            response.Errors.Add("El título es obligatorio");
+
+        if (libro.IdAutora <= 0)
+            response.Errors.Add("IdAutora es requerido");
+
+        if (libro.Precio <= 0)
+            response.Errors.Add("El precio debe ser mayor a 0");
+
+        if (libro.Stock < 0)
+            response.Errors.Add("El stock no puede ser negativo");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.SaveAsync(libro);
-        return Ok(new Response<Libros> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpPut]
     public async Task<ActionResult<Response<Libros>>> Put([FromBody] Libros libro)
     {
+        var response = new Response<Libros>();
+
+        if (libro.Id <= 0)
+            response.Errors.Add("Id es requerido");
+
+        if (string.IsNullOrWhiteSpace(libro.Titulo))
+            response.Errors.Add("El título es obligatorio");
+
+        if (libro.IdAutora <= 0)
+            response.Errors.Add("IdAutora es requerido");
+
+        if (libro.Precio <= 0)
+            response.Errors.Add("El precio debe ser mayor a 0");
+
+        if (libro.Stock < 0)
+            response.Errors.Add("El stock no puede ser negativo");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.UpdateAsync(libro);
-        return Ok(new Response<Libros> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Response<bool>>> Delete(int id)
     {
+        var response = new Response<bool>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var result = await _repository.DeleteAsync(id);
-        return Ok(new Response<bool> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 }

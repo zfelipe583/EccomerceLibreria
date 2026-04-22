@@ -26,32 +26,89 @@ public class FavoritosController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Response<Favoritos>>> Get(int id)
     {
+        var response = new Response<Favoritos>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var data = await _repository.GetById(id);
 
         if (data == null)
-            return NotFound(new Response<Favoritos> { Errors = { "Favorito no encontrado" } });
+        {
+            response.Errors.Add("Favorito no encontrado");
+            return NotFound(response);
+        }
 
-        return Ok(new Response<Favoritos> { Data = data });
+        response.Data = data;
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult<Response<Favoritos>>> Post([FromBody] Favoritos favorito)
     {
+        var response = new Response<Favoritos>();
+
+        if (favorito == null)
+        {
+            response.Errors.Add("Datos requeridos");
+            return BadRequest(response);
+        }
+
+        if (favorito.IdUsuario <= 0)
+            response.Errors.Add("IdUsuario es requerido");
+
+        if (favorito.IdLibro <= 0)
+            response.Errors.Add("IdLibro es requerido");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.SaveAsync(favorito);
-        return Ok(new Response<Favoritos> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpPut]
     public async Task<ActionResult<Response<Favoritos>>> Put([FromBody] Favoritos favorito)
     {
+        var response = new Response<Favoritos>();
+
+        if (favorito.Id <= 0)
+            response.Errors.Add("Id es requerido");
+
+        if (favorito.IdUsuario <= 0)
+            response.Errors.Add("IdUsuario es requerido");
+
+        if (favorito.IdLibro <= 0)
+            response.Errors.Add("IdLibro es requerido");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.UpdateAsync(favorito);
-        return Ok(new Response<Favoritos> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Response<bool>>> Delete(int id)
     {
+        var response = new Response<bool>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var result = await _repository.DeleteAsync(id);
-        return Ok(new Response<bool> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 }

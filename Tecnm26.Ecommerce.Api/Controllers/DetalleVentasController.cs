@@ -26,32 +26,101 @@ public class DetalleVentasController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Response<Detalle_Ventas>>> Get(int id)
     {
+        var response = new Response<Detalle_Ventas>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var data = await _repository.GetById(id);
 
         if (data == null)
-            return NotFound(new Response<Detalle_Ventas> { Errors = { "Detalle no encontrado" } });
+        {
+            response.Errors.Add("Detalle de venta no encontrado");
+            return NotFound(response);
+        }
 
-        return Ok(new Response<Detalle_Ventas> { Data = data });
+        response.Data = data;
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult<Response<Detalle_Ventas>>> Post([FromBody] Detalle_Ventas detalle)
     {
+        var response = new Response<Detalle_Ventas>();
+
+        if (detalle == null)
+        {
+            response.Errors.Add("Datos requeridos");
+            return BadRequest(response);
+        }
+
+        if (detalle.IdVenta <= 0)
+            response.Errors.Add("IdVenta es requerido");
+
+        if (detalle.IdLibro <= 0)
+            response.Errors.Add("IdLibro es requerido");
+
+        if (detalle.Cantidad <= 0)
+            response.Errors.Add("Cantidad debe ser mayor a 0");
+
+        if (detalle.PrecioUnitario <= 0)
+            response.Errors.Add("PrecioUnitario debe ser mayor a 0");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.SaveAsync(detalle);
-        return Ok(new Response<Detalle_Ventas> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpPut]
     public async Task<ActionResult<Response<Detalle_Ventas>>> Put([FromBody] Detalle_Ventas detalle)
     {
+        var response = new Response<Detalle_Ventas>();
+
+        if (detalle.Id <= 0)
+            response.Errors.Add("Id es requerido");
+
+        if (detalle.IdVenta <= 0)
+            response.Errors.Add("IdVenta es requerido");
+
+        if (detalle.IdLibro <= 0)
+            response.Errors.Add("IdLibro es requerido");
+
+        if (detalle.Cantidad <= 0)
+            response.Errors.Add("Cantidad debe ser mayor a 0");
+
+        if (detalle.PrecioUnitario <= 0)
+            response.Errors.Add("PrecioUnitario debe ser mayor a 0");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.UpdateAsync(detalle);
-        return Ok(new Response<Detalle_Ventas> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Response<bool>>> Delete(int id)
     {
+        var response = new Response<bool>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var result = await _repository.DeleteAsync(id);
-        return Ok(new Response<bool> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 }

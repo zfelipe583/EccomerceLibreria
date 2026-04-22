@@ -23,34 +23,92 @@ public class RolesController : ControllerBase
         return Ok(new Response<List<Rol>> { Data = data });
     }
 
-    [HttpPost]
-    public async Task<ActionResult<Response<Rol>>> Post(Rol rol)
-    {
-        var result = await _repository.SaveAsync(rol);
-        return Ok(new Response<Rol> { Data = result });
-    }
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Response<Rol>>> Get(int id)
     {
+        var response = new Response<Rol>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var data = await _repository.GetById(id);
 
         if (data == null)
-            return NotFound(new Response<Rol> { Errors = { "Rol no encontrado" } });
+        {
+            response.Errors.Add("Rol no encontrado");
+            return NotFound(response);
+        }
 
-        return Ok(new Response<Rol> { Data = data });
+        response.Data = data;
+        return Ok(response);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Response<Rol>>> Post([FromBody] Rol rol)
+    {
+        var response = new Response<Rol>();
+
+        if (rol == null)
+        {
+            response.Errors.Add("Datos requeridos");
+            return BadRequest(response);
+        }
+
+        if (string.IsNullOrWhiteSpace(rol.Nombre))
+            response.Errors.Add("El nombre del rol es obligatorio");
+
+        if (rol.Nombre != null && rol.Nombre.Length > 50)
+            response.Errors.Add("El nombre del rol no puede exceder 50 caracteres");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
+        var result = await _repository.SaveAsync(rol);
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpPut]
     public async Task<ActionResult<Response<Rol>>> Put([FromBody] Rol rol)
     {
+        var response = new Response<Rol>();
+
+        if (rol.Id <= 0)
+            response.Errors.Add("Id es requerido");
+
+        if (string.IsNullOrWhiteSpace(rol.Nombre))
+            response.Errors.Add("El nombre del rol es obligatorio");
+
+        if (rol.Nombre != null && rol.Nombre.Length > 50)
+            response.Errors.Add("El nombre del rol no puede exceder 50 caracteres");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.UpdateAsync(rol);
-        return Ok(new Response<Rol> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Response<bool>>> Delete(int id)
     {
+        var response = new Response<bool>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var result = await _repository.DeleteAsync(id);
-        return Ok(new Response<bool> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 }

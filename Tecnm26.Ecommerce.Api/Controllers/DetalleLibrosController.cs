@@ -26,31 +26,89 @@ public class DetalleLibrosController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Response<Detalle_Libros>>> Get(int id)
     {
+        var response = new Response<Detalle_Libros>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var data = await _repository.GetById(id);
 
         if (data == null)
-            return NotFound(new Response<Detalle_Libros> { Errors = { "Detalle no encontrado" } });
+        {
+            response.Errors.Add("Detalle no encontrado");
+            return NotFound(response);
+        }
 
-        return Ok(new Response<Detalle_Libros> { Data = data });
+        response.Data = data;
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult<Response<Detalle_Libros>>> Post([FromBody] Detalle_Libros detalle)
     {
+        var response = new Response<Detalle_Libros>();
+
+        if (detalle == null)
+        {
+            response.Errors.Add("Datos requeridos");
+            return BadRequest(response);
+        }
+
+        if (detalle.IdLibro <= 0)
+            response.Errors.Add("IdLibro es requerido");
+
+        if (detalle.Paginas < 0)
+            response.Errors.Add("Paginas no puede ser negativo");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.SaveAsync(detalle);
-        return Ok(new Response<Detalle_Libros> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpPut]
     public async Task<ActionResult<Response<Detalle_Libros>>> Put([FromBody] Detalle_Libros detalle)
     {
+        var response = new Response<Detalle_Libros>();
+
+        if (detalle.Id <= 0)
+            response.Errors.Add("Id es requerido");
+
+        if (detalle.IdLibro <= 0)
+            response.Errors.Add("IdLibro es requerido");
+
+        if (detalle.Paginas < 0)
+            response.Errors.Add("Paginas no puede ser negativo");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.UpdateAsync(detalle);
-        return Ok(new Response<Detalle_Libros> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
+
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Response<bool>>> Delete(int id)
     {
+        var response = new Response<bool>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var result = await _repository.DeleteAsync(id);
-        return Ok(new Response<bool> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 }

@@ -26,32 +26,101 @@ public class VentasController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Response<Ventas>>> Get(int id)
     {
+        var response = new Response<Ventas>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var data = await _repository.GetById(id);
 
         if (data == null)
-            return NotFound(new Response<Ventas> { Errors = { "Venta no encontrada" } });
+        {
+            response.Errors.Add("Venta no encontrada");
+            return NotFound(response);
+        }
 
-        return Ok(new Response<Ventas> { Data = data });
+        response.Data = data;
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult<Response<Ventas>>> Post([FromBody] Ventas venta)
     {
+        var response = new Response<Ventas>();
+
+        if (venta == null)
+        {
+            response.Errors.Add("Datos requeridos");
+            return BadRequest(response);
+        }
+
+        if (venta.IdUsuario <= 0)
+            response.Errors.Add("IdUsuario es requerido");
+
+        if (venta.Total <= 0)
+            response.Errors.Add("El total debe ser mayor a 0");
+
+        if (string.IsNullOrWhiteSpace(venta.MetodoPago))
+            response.Errors.Add("MetodoPago es requerido");
+
+        if (!string.IsNullOrWhiteSpace(venta.MetodoPago) && venta.MetodoPago.Length > 50)
+            response.Errors.Add("MetodoPago no puede exceder 50 caracteres");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.SaveAsync(venta);
-        return Ok(new Response<Ventas> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpPut]
     public async Task<ActionResult<Response<Ventas>>> Put([FromBody] Ventas venta)
     {
+        var response = new Response<Ventas>();
+
+        if (venta.Id <= 0)
+            response.Errors.Add("Id es requerido");
+
+        if (venta.IdUsuario <= 0)
+            response.Errors.Add("IdUsuario es requerido");
+
+        if (venta.Total <= 0)
+            response.Errors.Add("El total debe ser mayor a 0");
+
+        if (string.IsNullOrWhiteSpace(venta.MetodoPago))
+            response.Errors.Add("MetodoPago es requerido");
+
+        if (!string.IsNullOrWhiteSpace(venta.MetodoPago) && venta.MetodoPago.Length > 50)
+            response.Errors.Add("MetodoPago no puede exceder 50 caracteres");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.UpdateAsync(venta);
-        return Ok(new Response<Ventas> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Response<bool>>> Delete(int id)
     {
+        var response = new Response<bool>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var result = await _repository.DeleteAsync(id);
-        return Ok(new Response<bool> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 }
