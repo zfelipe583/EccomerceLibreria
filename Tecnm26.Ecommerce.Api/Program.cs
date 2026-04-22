@@ -1,41 +1,35 @@
+using Dapper.Contrib.Extensions;
+using Tecnm26.Ecommerce.Api.DataAccess;
+using Tecnm26.Ecommerce.Api.DataAccess.Interfaces;
+using Tecnm26.Ecommerce.Api.Repositories;
+using Tecnm26.Ecommerce.Api.Repositories.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
+builder.Services.AddScoped<IDbContext, DbContext>();
+
+SqlMapperExtensions.TableNameMapper = entityType =>
+{
+    var name = entityType.ToString();
+    if (name.Contains("Tecnm26.Ecommerce.Core.Entities."))
+        name = name.Replace("Tecnm26.Ecommerce.Core.Entities.", "");
+
+    var letters = name.ToCharArray();
+    letters[0] = char.ToUpper(letters[0]);
+    return new string(letters);
+};
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast");
-
+app.MapControllers();
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}

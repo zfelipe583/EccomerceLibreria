@@ -1,4 +1,4 @@
-﻿namespace Tecnm26.Ecommerce.App.DataAccess.Interfaces;
+﻿namespace Tecnm26.Ecommerce.Api.DataAccess.Interfaces;
 using System.Data.Common;
 
 public interface IDbContext

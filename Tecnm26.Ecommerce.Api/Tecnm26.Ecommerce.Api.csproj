@@ -10,13 +10,13 @@
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.1.72" />
         <PackageReference Include="Dapper.Contrib" Version="2.0.78" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.6"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.6" />
         <PackageReference Include="MySqlConnector" Version="2.5.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.7" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-      <Folder Include="Repositories\Interfaces\" />
+      <ProjectReference Include="..\Tecnm26.Ecommerce.Core\Tecnm26.Ecommerce.Core.csproj" />
     </ItemGroup>
 
 </Project>

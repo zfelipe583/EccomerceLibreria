@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 using MySqlConnector;
-using Tecnm26.Ecommerce.App.DataAccess.Interfaces;
+using Tecnm26.Ecommerce.Api.DataAccess.Interfaces;
 
 namespace Tecnm26.Ecommerce.Api.DataAccess;
 
