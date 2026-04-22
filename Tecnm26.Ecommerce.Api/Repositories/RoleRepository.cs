@@ -15,37 +15,37 @@ public class RoleRepository : IRoleRepository
         _dbContext = context;
     }
 
-    public async Task<Role> SaveAsync(Role role)
+    public async Task<Rol> SaveAsync(Rol rol)
     {
-        role.Id = await _dbContext.Connection.InsertAsync(role);
-        return role;
+        rol.Id = await _dbContext.Connection.InsertAsync(rol);
+        return rol;
     }
 
-    public async Task<Role> UpdateAsync(Role role)
+    public async Task<Rol> UpdateAsync(Rol rol)
     {
-        await _dbContext.Connection.UpdateAsync(role);
-        return role;
+        await _dbContext.Connection.UpdateAsync(rol);
+        return rol;
     }
 
-    public async Task<List<Role>> GetAllAsync()
+    public async Task<List<Rol>> GetAllAsync()
     {
         string sql = "SELECT * FROM Rol WHERE IsDeleted = 0";
-        var result = await _dbContext.Connection.QueryAsync<Role>(sql);
+        var result = await _dbContext.Connection.QueryAsync<Rol>(sql);
         return result.ToList();
     }
 
-    public async Task<Role> GetById(int id)
+    public async Task<Rol> GetById(int id)
     {
-        var role = await _dbContext.Connection.GetAsync<Role>(id);
-        return role?.IsDeleted == true ? null : role;
+        var rol = await _dbContext.Connection.GetAsync<Rol>(id);
+        return rol?.IsDeleted == true ? null : rol;
     }
 
     public async Task<bool> DeleteAsync(int id)
     {
-        var role = await GetById(id);
-        if (role == null) return false;
+        var rol = await GetById(id);
+        if (rol == null) return false;
 
-        role.IsDeleted = true;
-        return await _dbContext.Connection.UpdateAsync(role);
+        rol.IsDeleted = true;
+        return await _dbContext.Connection.UpdateAsync(rol);
     }
 }

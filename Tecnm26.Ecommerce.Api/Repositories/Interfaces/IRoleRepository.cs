@@ -4,9 +4,9 @@ namespace Tecnm26.Ecommerce.Api.Repositories.Interfaces;
 
 public interface IRoleRepository
 {
-    Task<Role> SaveAsync(Role role);
-    Task<Role> UpdateAsync(Role role);
-    Task<List<Role>> GetAllAsync();
+    Task<Rol> SaveAsync(Rol rol);
+    Task<Rol> UpdateAsync(Rol rol);
+    Task<List<Rol>> GetAllAsync();
     Task<bool> DeleteAsync(int id);
-    Task<Role> GetById(int id);
+    Task<Rol> GetById(int id);
 }

@@ -17,16 +17,16 @@ public class RolesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<Response<List<Role>>>> GetAll()
+    public async Task<ActionResult<Response<List<Rol>>>> GetAll()
     {
         var data = await _repository.GetAllAsync();
-        return Ok(new Response<List<Role>> { Data = data });
+        return Ok(new Response<List<Rol>> { Data = data });
     }
 
     [HttpPost]
-    public async Task<ActionResult<Response<Role>>> Post(Role role)
+    public async Task<ActionResult<Response<Rol>>> Post(Rol rol)
     {
-        var result = await _repository.SaveAsync(role);
-        return Ok(new Response<Role> { Data = result });
+        var result = await _repository.SaveAsync(rol);
+        return Ok(new Response<Rol> { Data = result });
     }
 }
