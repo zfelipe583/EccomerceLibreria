@@ -18,6 +18,7 @@ builder.Services.AddScoped<IAutoraRepository,AutoraRepository>();
 builder.Services.AddScoped<ILibrosRepository, LibrosRepository>();
 builder.Services.AddScoped<IVentasRepository, VentasRepository>();
 builder.Services.AddScoped<IDetalleVentasRepository, DetalleVentasRepository>();
+builder.Services.AddScoped<IDetalleLibrosRepository, DetalleLibrosRepository>();
 
 builder.Services.AddScoped<IDbContext, DbContext>();
 
