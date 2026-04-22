@@ -12,9 +12,10 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUsuarioRepository,UsuarioRepository>();
+builder.Services.AddScoped<IAutoraRepository,AutoraRepository>();
+
 builder.Services.AddScoped<IDbContext, DbContext>();
 
 SqlMapperExtensions.TableNameMapper = entityType =>
