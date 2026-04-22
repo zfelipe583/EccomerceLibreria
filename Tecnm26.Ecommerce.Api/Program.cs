@@ -20,6 +20,7 @@ builder.Services.AddScoped<IVentasRepository, VentasRepository>();
 builder.Services.AddScoped<IDetalleVentasRepository, DetalleVentasRepository>();
 builder.Services.AddScoped<IDetalleLibrosRepository, DetalleLibrosRepository>();
 builder.Services.AddScoped<IFavoritosRepository, FavoritosRepository>();
+builder.Services.AddScoped<IEnviosRepository, EnviosRepository>();
 
 builder.Services.AddScoped<IDbContext, DbContext>();
 
