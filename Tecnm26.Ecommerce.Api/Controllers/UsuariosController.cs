@@ -26,34 +26,123 @@ public class UsuariosController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Response<Usuario>>> Get(int id)
     {
+        var response = new Response<Usuario>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var data = await _repository.GetById(id);
 
         if (data == null)
         {
-            return NotFound(new Response<Usuario> { Errors = { "Usuario no encontrado" } });
+            response.Errors.Add("Usuario no encontrado");
+            return NotFound(response);
         }
 
-        return Ok(new Response<Usuario> { Data = data });
+        response.Data = data;
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult<Response<Usuario>>> Post([FromBody] Usuario usuario)
     {
+        var response = new Response<Usuario>();
+
+        if (usuario == null)
+        {
+            response.Errors.Add("Datos requeridos");
+            return BadRequest(response);
+        }
+
+        if (usuario.IdRol <= 0)
+            response.Errors.Add("IdRol es requerido");
+
+        if (string.IsNullOrWhiteSpace(usuario.Username))
+            response.Errors.Add("Username es requerido");
+
+        if (string.IsNullOrWhiteSpace(usuario.Password))
+            response.Errors.Add("Password es requerido");
+
+        if (string.IsNullOrWhiteSpace(usuario.Email) || !usuario.Email.Contains("@"))
+            response.Errors.Add("Email inválido");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.SaveAsync(usuario);
-        return Ok(new Response<Usuario> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpPut]
     public async Task<ActionResult<Response<Usuario>>> Put([FromBody] Usuario usuario)
     {
+        var response = new Response<Usuario>();
+
+        if (usuario.Id <= 0)
+            response.Errors.Add("Id es requerido");
+
+        if (usuario.IdRol <= 0)
+            response.Errors.Add("IdRol es requerido");
+
+        if (string.IsNullOrWhiteSpace(usuario.Username))
+            response.Errors.Add("Username es requerido");
+
+        if (string.IsNullOrWhiteSpace(usuario.Email) || !usuario.Email.Contains("@"))
+            response.Errors.Add("Email inválido");
+
+        if (response.Errors.Count > 0)
+            return BadRequest(response);
+
         var result = await _repository.UpdateAsync(usuario);
-        return Ok(new Response<Usuario> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
     }
 
     [HttpDelete("{id:int}")]
     public async Task<ActionResult<Response<bool>>> Delete(int id)
     {
+        var response = new Response<bool>();
+
+        if (id <= 0)
+        {
+            response.Errors.Add("Id inválido");
+            return BadRequest(response);
+        }
+
         var result = await _repository.DeleteAsync(id);
-        return Ok(new Response<bool> { Data = result });
+        response.Data = result;
+
+        return Ok(response);
+    }
+
+    [HttpPost("login")]
+    public async Task<ActionResult<Response<Usuario>>> Login([FromBody] Usuario usuario)
+    {
+        var response = new Response<Usuario>();
+
+        if (usuario == null ||
+            string.IsNullOrWhiteSpace(usuario.Username) ||
+            string.IsNullOrWhiteSpace(usuario.Password))
+        {
+            response.Errors.Add("Username y Password son requeridos");
+            return BadRequest(response);
+        }
+
+        var result = await _repository.Login(usuario.Username, usuario.Password);
+
+        if (result == null)
+        {
+            response.Errors.Add("Credenciales incorrectas");
+            return Unauthorized(response);
+        }
+
+        response.Data = result;
+        return Ok(response);
     }
 }

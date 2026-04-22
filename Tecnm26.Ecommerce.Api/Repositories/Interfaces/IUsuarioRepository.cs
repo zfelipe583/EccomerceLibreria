@@ -9,4 +9,5 @@ public interface IUsuarioRepository
     Task<List<Usuario>> GetAllAsync();
     Task<bool> DeleteAsync(int id);
     Task<Usuario> GetById(int id);
+    Task<Usuario> Login(string username, string password);
 }

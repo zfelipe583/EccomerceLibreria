@@ -48,4 +48,16 @@ public class UsuarioRepository : IUsuarioRepository
         usuario.IsDeleted = true;
         return await _dbContext.Connection.UpdateAsync(usuario);
     }
+    public async Task<Usuario> Login(string username, string password)
+    {
+        string sql = @"SELECT * FROM Usuario 
+                   WHERE Username = @Username 
+                   AND Password = @Password 
+                   AND IsDeleted = 0";
+
+        return await _dbContext.Connection.QueryFirstOrDefaultAsync<Usuario>(
+            sql, 
+            new { Username = username, Password = password }
+        );
+    }
 }
