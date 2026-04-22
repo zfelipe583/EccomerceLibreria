@@ -4,6 +4,7 @@ using Tecnm26.Ecommerce.Api.DataAccess.Interfaces;
 using Tecnm26.Ecommerce.Api.Repositories.Interfaces;
 using Tecnm26.Ecommerce.Core.Entities;
 
+
 namespace Tecnm26.Ecommerce.Api.Repositories;
 
 public class BookRepository : IBookRepository
@@ -48,7 +49,7 @@ public class BookRepository : IBookRepository
         var book = await GetById(id);
         if (book == null) return false;
 
-        book.IsDeleted = true; // Aplicamos borrado lógico
+        book.IsDeleted = true; 
         return await _dbContext.Connection.UpdateAsync(book);
     }
 }
